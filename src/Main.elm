@@ -9,7 +9,7 @@ import Subscriptions exposing (subscriptions)
 
 init : ( Model, Cmd Msg )
 init =
-  ( "Headmates", Cmd.none )
+  ( { userInput = "Headmates" }, Cmd.none )
 
 -- Main
 

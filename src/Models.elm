@@ -1,4 +1,4 @@
 module Models exposing (..)
 
 type alias Model =
-  String
+  { userInput : String }
