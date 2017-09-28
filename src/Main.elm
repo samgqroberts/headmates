@@ -9,7 +9,14 @@ import Subscriptions exposing (subscriptions)
 
 init : ( Model, Cmd Msg )
 init =
-  ( { userInput = "" }, Cmd.none )
+  (
+    { userInput = ""
+    , headmateNext1 = "next 1"
+    , headmateNext2 = "next 2"
+    , headmateNext3 = "next 3"
+    }
+  , Cmd.none
+  )
 
 -- Main
 

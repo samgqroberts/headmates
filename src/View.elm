@@ -1,6 +1,6 @@
 module View exposing (..)
 
-import Html exposing (Html, div, text, textarea, pre)
+import Html exposing (Html, div, text, textarea, pre, span)
 import Html.Events exposing (onInput)
 import Html.Attributes exposing (autofocus, readonly)
 import Models exposing (Model)
@@ -17,8 +17,15 @@ view model =
         [ textarea [ id UserInput, onInput Msgs.UpdateUserInput, autofocus True ] [ text model.userInput ]
         ]
     , div [ id HeadmatesContainer ]
-        [ pre [ class [ Headmate ] ] [ text model.userInput]
-        , pre [ class [ Headmate ] ] [ text model.userInput]
-        , pre [ class [ Headmate ] ] [ text model.userInput]
+        [ headmate model.userInput model.headmateNext1
+        , headmate model.userInput model.headmateNext2
+        , headmate model.userInput model.headmateNext3
         ]
+    ]
+
+headmate : String -> String -> Html Msg
+headmate userInput next =
+  pre [ class [ Headmate ] ]
+    [ span [ class [ HeadmateUserCopy ] ] [ text userInput ]
+    , span [ class [ HeadmateNext ] ] [ text next ]
     ]

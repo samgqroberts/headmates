@@ -12,6 +12,8 @@ type CssIds
   | UserInputContainer
   | UserInput
   | HeadmatesContainer
+  | HeadmateUserCopy
+  | HeadmateNext
 
 homepageNamespace =
     withNamespace "homepage"

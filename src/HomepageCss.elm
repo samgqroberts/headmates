@@ -46,4 +46,6 @@ css =
             , border3 (px 1) solid greyscale3
             , whiteSpace preWrap
             ]
+        , class HeadmateNext
+            [ color blue1 ]
         ]
