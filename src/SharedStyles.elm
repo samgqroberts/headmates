@@ -8,7 +8,8 @@ type CssClasses
 
 
 type CssIds
-    = UserInput
+  = AppContainer
+  | UserInput
 
 homepageNamespace =
     withNamespace "homepage"

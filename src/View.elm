@@ -2,6 +2,7 @@ module View exposing (..)
 
 import Html exposing (Html, div, text, textarea)
 import Html.Events exposing (onInput)
+import Html.Attributes exposing (autofocus)
 import Models exposing (Model)
 import Msgs exposing (Msg)
 import SharedStyles exposing (..)
@@ -11,6 +12,6 @@ import SharedStyles exposing (..)
 
 view : Model -> Html Msg
 view model =
-  div [ ]
-    [ textarea [ id UserInput, onInput Msgs.UpdateUserInput ] [ text model.userInput ]
+  div [ id AppContainer ]
+    [ textarea [ id UserInput, onInput Msgs.UpdateUserInput, autofocus True ] [ text model.userInput ]
     ]
