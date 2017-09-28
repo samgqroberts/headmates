@@ -4,12 +4,14 @@ import Html.CssHelpers exposing (withNamespace)
 
 
 type CssClasses
-    = NavLink
+    = Headmate
 
 
 type CssIds
   = AppContainer
+  | UserInputContainer
   | UserInput
+  | HeadmatesContainer
 
 homepageNamespace =
     withNamespace "homepage"
