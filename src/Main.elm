@@ -13,6 +13,7 @@ init =
   (
     { userInput = ""
     , markov = Dict.empty
+    , suggestion = ""
     , headmateNext1 = "next 1"
     , headmateNext2 = "next 2"
     , headmateNext3 = "next 3"

@@ -5,6 +5,7 @@ import Dict exposing (Dict)
 type alias Model =
   { userInput : String
   , markov : Markov
+  , suggestion: String
   , headmateNext1 : String
   , headmateNext2 : String
   , headmateNext3 : String

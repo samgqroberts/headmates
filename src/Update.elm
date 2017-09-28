@@ -2,21 +2,64 @@ module Update exposing (..)
 
 import Msgs exposing (Msg(..))
 import Models exposing (Model, Markov)
+import List
 import Dict
 import String
+import Array
+import Random
+import Tuple
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case Debug.log "action" msg of
-    UpdateUserInput new ->
+    UpdateUserInput newInput ->
       let
-        newMarkov = buildMarkov new
+        newMarkov = buildMarkov newInput 2
+        nextSuggestion = predict newInput
       in
-        ( { model | userInput = new, markov = newMarkov }, Cmd.none )
+        ( { model | userInput = newInput, markov = newMarkov, suggestion = nextSuggestion }, Cmd.none )
 
-buildMarkov : String -> Markov
-buildMarkov sourceText =
-  buildMarkovFn sourceText 2 Dict.empty
+predict : String -> String
+predict input =
+  let
+    prediction =
+      [6, 5, 4, 3, 2, 1]
+        |> List.map (\order -> (order, buildMarkov input order))
+        |> List.map (\(order, markov) -> (order, predictSingle input order markov))
+        |> List.filter (\(order, prediction) ->
+          case prediction of
+            Nothing -> False
+            Just _ -> True
+          )
+        |> List.head
+  in
+    case prediction of
+      Nothing -> ""
+      Just something ->
+        case Tuple.second something of
+          Nothing -> ""
+          Just again -> again
+
+predictSingle : String -> Int -> Markov -> Maybe String
+predictSingle input order markov =
+  case Dict.get (String.right order input) markov  of
+    Nothing -> Nothing
+    Just dict ->
+      let
+        values = Dict.toList dict
+          |> List.map (\(gram, count) -> ((List.range 0 (count - 1)) |> List.map (\_ -> gram)))
+          |> List.concat
+        seed = Random.initialSeed 123123
+        lastItem = List.length values - 1
+        generator = Random.int 0 lastItem
+        randomIndex = Tuple.first (Random.step generator seed)
+      in
+        Array.fromList values
+          |> Array.get randomIndex
+
+buildMarkov : String -> Int -> Markov
+buildMarkov sourceText order =
+  buildMarkovFn sourceText order Dict.empty
 
 buildMarkovFn : String -> Int -> Markov -> Markov
 buildMarkovFn sourceText order currentMarkov =

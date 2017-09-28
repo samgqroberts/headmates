@@ -17,7 +17,7 @@ view model =
         [ textarea [ id UserInput, onInput Msgs.UpdateUserInput, autofocus True ] [ text model.userInput ]
         ]
     , div [ id HeadmatesContainer ]
-        [ headmate model.userInput model.headmateNext1
+        [ headmate model.userInput model.suggestion
         , headmate model.userInput model.headmateNext2
         , headmate model.userInput model.headmateNext3
         ]
