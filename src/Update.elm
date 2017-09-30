@@ -21,24 +21,16 @@ update msg model =
 
 predict : String -> String
 predict input =
-  let
-    prediction =
-      [6, 5, 4, 3, 2, 1]
-        |> List.map (\order -> (order, buildMarkov input order))
-        |> List.map (\(order, markov) -> (order, predictSingle input order markov))
-        |> List.filter (\(order, prediction) ->
-          case prediction of
-            Nothing -> False
-            Just _ -> True
-          )
-        |> List.head
-  in
-    case prediction of
-      Nothing -> ""
-      Just something ->
-        case Tuple.second something of
-          Nothing -> ""
-          Just again -> again
+  List.range 1 10
+    |> List.sortBy negate
+    |> List.filterMap (inputIntoPrediction input)
+    |> List.foldr always ""
+
+inputIntoPrediction : String -> Int -> Maybe String
+inputIntoPrediction input order =
+    order
+        |> buildMarkov input
+        |> predictSingle input order
 
 predictSingle : String -> Int -> Markov -> Maybe String
 predictSingle input order markov =
