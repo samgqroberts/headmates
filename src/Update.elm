@@ -6,34 +6,37 @@ import List
 import Dict
 import String
 import Array
-import Random
+import Random exposing (Seed)
 import Tuple
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case Debug.log "action" msg of
     UpdateUserInput newInput ->
+      ( { model | userInput = newInput }, Random.generate UpdatePredictions (Random.int Random.minInt Random.maxInt) )
+    UpdatePredictions seedInt ->
       let
-        newMarkov = buildMarkov newInput 2
-        nextSuggestion = predict newInput
+        seed = Random.initialSeed seedInt
+        newMarkov = buildMarkov model.userInput 2
+        nextSuggestion = predict seed model.userInput
       in
-        ( { model | userInput = newInput, markov = newMarkov, suggestion = nextSuggestion }, Cmd.none )
+        ( { model | markov = newMarkov, suggestion = nextSuggestion }, Cmd.none )
 
-predict : String -> String
-predict input =
+predict : Seed -> String -> String
+predict seed input =
   List.range 1 10
     |> List.sortBy negate
-    |> List.filterMap (inputIntoPrediction input)
+    |> List.filterMap (inputIntoPrediction seed input)
     |> List.foldr always ""
 
-inputIntoPrediction : String -> Int -> Maybe String
-inputIntoPrediction input order =
+inputIntoPrediction : Seed -> String -> Int -> Maybe String
+inputIntoPrediction seed input order =
     order
         |> buildMarkov input
-        |> predictSingle input order
+        |> predictSingle seed input order
 
-predictSingle : String -> Int -> Markov -> Maybe String
-predictSingle input order markov =
+predictSingle : Seed -> String -> Int -> Markov -> Maybe String
+predictSingle seed input order markov =
   case Dict.get (String.right order input) markov  of
     Nothing -> Nothing
     Just dict ->
@@ -41,7 +44,6 @@ predictSingle input order markov =
         values = Dict.toList dict
           |> List.map (\(gram, count) -> ((List.range 0 (count - 1)) |> List.map (\_ -> gram)))
           |> List.concat
-        seed = Random.initialSeed 123123
         lastItem = List.length values - 1
         generator = Random.int 0 lastItem
         randomIndex = Tuple.first (Random.step generator seed)
