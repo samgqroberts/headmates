@@ -1,8 +1,7 @@
-module UpdateTest exposing (..)
+module MarkovTest exposing (..)
 
-import Update exposing (buildMarkovFn)
+import Markov exposing (buildMarkovFn)
 import Expect exposing (Expectation)
-import Fuzz exposing (Fuzzer, int, list, string)
 import Test exposing (..)
 import Dict
 import Models exposing (Markov)
