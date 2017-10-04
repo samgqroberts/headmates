@@ -40,9 +40,8 @@ css =
             , flexDirection column
             ]
         , class Headmate
-            [ padding (px 16)
-            , paddingLeft (px 24)
-            , paddingRight (px 24)
+            [ padding2 (Css.em 1) (px 24)
+            , margin (px 0)
             , border3 (px 1) solid greyscale3
             , whiteSpace preWrap
             , property "word-break" "break-all"
