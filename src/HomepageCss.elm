@@ -45,6 +45,7 @@ css =
             , paddingRight (px 24)
             , border3 (px 1) solid greyscale3
             , whiteSpace preWrap
+            , property "word-break" "break-all"
             ]
         , class HeadmateNext
             [ color blue1 ]
