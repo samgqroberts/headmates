@@ -43,12 +43,12 @@ buildMarkov sourceText order =
 
 buildMarkovFn : String -> Int -> MarkovDict -> MarkovDict
 buildMarkovFn sourceText order currentMarkov =
-  if (String.length sourceText) < order + 1 then
+  if (String.length sourceText) < order * 2 then
     currentMarkov
   else
     let
       kgram1 = String.slice 0 order sourceText
-      kgram2 = String.slice 1 (order + 1) sourceText
+      kgram2 = String.slice (order) (2 * order) sourceText
       nextSourceText = String.dropLeft 1 sourceText
       nextMarkov = addOneToKeyOfKey kgram1 kgram2 currentMarkov
     in
