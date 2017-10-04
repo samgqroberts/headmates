@@ -3,8 +3,8 @@ module Update exposing (..)
 import Random exposing (Seed)
 
 import Msgs exposing (Msg(..))
-import Models exposing (Model, Markov)
-import Markov exposing (predict, buildMarkov)
+import Models exposing (..)
+import Predictor exposing (predict)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -14,7 +14,9 @@ update msg model =
     UpdatePredictions seedInt ->
       let
         seed = Random.initialSeed seedInt
-        newMarkov = buildMarkov model.userInput 2
-        nextSuggestion = predict seed model.userInput
       in
-        ( { model | markov = newMarkov, suggestion = nextSuggestion }, Cmd.none )
+        ( { model | headmates = (List.map (\h -> updateHeadmatePrediction seed model.userInput h) model.headmates) }, Cmd.none )
+
+updateHeadmatePrediction : Seed -> String -> Headmate -> Headmate
+updateHeadmatePrediction seed input headmate =
+  { headmate | prediction = (predict seed input headmate.predictor)}

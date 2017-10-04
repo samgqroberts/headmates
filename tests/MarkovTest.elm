@@ -4,9 +4,9 @@ import Markov exposing (buildMarkovFn)
 import Expect exposing (Expectation)
 import Test exposing (..)
 import Dict
-import Models exposing (Markov)
+import Models exposing (MarkovDict)
 
-markovTest : String -> Int -> Markov -> Expectation
+markovTest : String -> Int -> MarkovDict -> Expectation
 markovTest sourceText order expected =
   Expect.equal (buildMarkovFn sourceText order Dict.empty) expected
 

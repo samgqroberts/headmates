@@ -5,14 +5,15 @@ import Dict
 import Random exposing (Seed)
 import Array
 
-import Models exposing (Markov)
+import Models exposing (MarkovDict, MarkovConfig, Prediction(..))
 
-predict : Seed -> String -> String
-predict seed input =
-  List.range 1 10
+predict : Seed -> String -> MarkovConfig -> Prediction
+predict seed input config =
+  List.range (Tuple.first config.orderRange) (Tuple.second config.orderRange)
     |> List.sortBy negate
     |> List.filterMap (inputIntoPrediction seed input)
-    |> List.foldr always ""
+    |> List.map Prediction
+    |> List.foldr always NoPrediction
 
 inputIntoPrediction : Seed -> String -> Int -> Maybe String
 inputIntoPrediction seed input order =
@@ -20,7 +21,7 @@ inputIntoPrediction seed input order =
         |> buildMarkov input
         |> predictSingle seed input order
 
-predictSingle : Seed -> String -> Int -> Markov -> Maybe String
+predictSingle : Seed -> String -> Int -> MarkovDict -> Maybe String
 predictSingle seed input order markov =
   case Dict.get (String.right order input) markov  of
     Nothing -> Nothing
@@ -36,11 +37,11 @@ predictSingle seed input order markov =
         Array.fromList values
           |> Array.get randomIndex
 
-buildMarkov : String -> Int -> Markov
+buildMarkov : String -> Int -> MarkovDict
 buildMarkov sourceText order =
   buildMarkovFn sourceText order Dict.empty
 
-buildMarkovFn : String -> Int -> Markov -> Markov
+buildMarkovFn : String -> Int -> MarkovDict -> MarkovDict
 buildMarkovFn sourceText order currentMarkov =
   if (String.length sourceText) < order + 1 then
     currentMarkov
@@ -53,7 +54,7 @@ buildMarkovFn sourceText order currentMarkov =
     in
       buildMarkovFn nextSourceText order nextMarkov
 
-addOneToKeyOfKey : String -> String -> Markov -> Markov
+addOneToKeyOfKey : String -> String -> MarkovDict -> MarkovDict
 addOneToKeyOfKey firstKey secondKey currentMarkov =
   Dict.update firstKey (addOneToKey secondKey) currentMarkov
 

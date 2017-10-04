@@ -3,7 +3,7 @@ module View exposing (..)
 import Html exposing (Html, div, text, textarea, pre, span)
 import Html.Events exposing (onInput)
 import Html.Attributes exposing (autofocus, readonly)
-import Models exposing (Model)
+import Models exposing (Model, Prediction(..))
 import Msgs exposing (Msg)
 import SharedStyles exposing (..)
 
@@ -16,16 +16,18 @@ view model =
     [ div [ id UserInputContainer ]
         [ textarea [ id UserInput, onInput Msgs.UpdateUserInput, autofocus True ] [ text model.userInput ]
         ]
-    , div [ id HeadmatesContainer ]
-        [ headmate model.userInput model.suggestion
-        , headmate model.userInput model.headmateNext2
-        , headmate model.userInput model.headmateNext3
-        ]
+    , div [ id HeadmatesContainer ] (List.map (\h -> viewHeadmate model.userInput h) model.headmates)
     ]
 
-headmate : String -> String -> Html Msg
-headmate userInput next =
+viewHeadmate : String -> Models.Headmate -> Html Msg
+viewHeadmate userInput headmate =
   pre [ class [ Headmate ] ]
     [ span [ class [ HeadmateUserCopy ] ] [ text userInput ]
-    , span [ class [ HeadmateNext ] ] [ text next ]
+    , span [ class [ HeadmateNext ] ] [ text (viewPrediction headmate.prediction) ]
     ]
+
+viewPrediction : Prediction -> String
+viewPrediction prediction =
+  case prediction of
+    Prediction value -> value
+    NoPrediction -> ""

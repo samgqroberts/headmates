@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (program)
 import Msgs exposing (Msg)
-import Models exposing (Model)
+import Models exposing (..)
 import Update exposing (update)
 import View exposing (view)
 import Subscriptions exposing (subscriptions)
@@ -12,11 +12,11 @@ init : ( Model, Cmd Msg )
 init =
   (
     { userInput = ""
-    , markov = Dict.empty
-    , suggestion = ""
-    , headmateNext1 = "next 1"
-    , headmateNext2 = "next 2"
-    , headmateNext3 = "next 3"
+    , headmates =
+        [ { predictor = Markov { orderRange = (1, 5) }, prediction = NoPrediction }
+        , { predictor = Markov { orderRange = (1, 10) }, prediction = NoPrediction }
+        , { predictor = Markov { orderRange = (6, 10) }, prediction = NoPrediction }
+        ]
     }
   , Cmd.none
   )
