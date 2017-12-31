@@ -24,7 +24,6 @@ var commonConfig = {
   output: {
     path:       outputPath,
     filename:   `[name].js`,
-    publicPath: '/'
   },
 
   resolve: {
