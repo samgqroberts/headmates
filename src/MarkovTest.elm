@@ -10,6 +10,7 @@ markovTest : String -> Int -> MarkovDict -> Expectation
 markovTest sourceText order expected =
   Expect.equal (buildMarkovFn sourceText order Dict.empty) expected
 
+
 suite : Test
 suite =
   describe "Building Markov Chains"

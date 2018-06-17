@@ -31,5 +31,7 @@ After installation, normal development involves the following.
 ### Running a local build, with webpack watching, recompilation, and auto-refresh of browser page
 `yarn start`
 
-### Running the tests in watch mode
-`elm-test --watch`
+### Running the tests
+NOTE: `elm-test` (or `elm test`, they are the same) alone does not work! This is because we want collocated tests (no separate `tests/` directory). You must include a file matcher.
+`elm-test src/**/*Test.elm` - run the tests
+`elm-test src/**/*Test.elm --watch` - run the tests in watch mode
