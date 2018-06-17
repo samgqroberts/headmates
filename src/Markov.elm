@@ -7,6 +7,9 @@ import Array
 
 import Models exposing (MarkovDict, MarkovConfig, Prediction(..))
 
+-- convert a source text input into a prediction for the following phrase
+-- do so for each order in the config's order range
+-- return the Prediction of the highest order that has a Prediction
 predict : Seed -> String -> MarkovConfig -> Prediction
 predict seed input config =
   List.range (Tuple.first config.orderRange) (Tuple.second config.orderRange)
@@ -15,12 +18,15 @@ predict seed input config =
     |> List.map Prediction
     |> List.foldr always NoPrediction
 
+-- convert a source text input into a prediction for the following phrase
+-- by building a MarkovDict
 inputIntoPrediction : Seed -> String -> Int -> Maybe String
 inputIntoPrediction seed input order =
     order
         |> buildMarkov input
         |> predictSingle seed input order
 
+-- use a MarkovDict to predict the next k-gram of given order
 predictSingle : Seed -> String -> Int -> MarkovDict -> Maybe String
 predictSingle seed input order markov =
   case Dict.get (String.right order input) markov  of
@@ -37,10 +43,13 @@ predictSingle seed input order markov =
         Array.fromList values
           |> Array.get randomIndex
 
+-- produce a MarkovDict with k-gram statistics of given source text
+-- can use the produced dict to predict probabilities of proceeding k-grams
 buildMarkov : String -> Int -> MarkovDict
 buildMarkov sourceText order =
   buildMarkovFn sourceText order Dict.empty
 
+-- recursive function for building a MarkovDict
 buildMarkovFn : String -> Int -> MarkovDict -> MarkovDict
 buildMarkovFn sourceText order currentMarkov =
   if (String.length sourceText) < order * 2 then
@@ -53,6 +62,10 @@ buildMarkovFn sourceText order currentMarkov =
       nextMarkov = addOneToKeyOfKey kgram1 kgram2 currentMarkov
     in
       buildMarkovFn nextSourceText order nextMarkov
+
+{-
+  helper functions dealing with building / mutating a MarkovDict
+-}
 
 addOneToKeyOfKey : String -> String -> MarkovDict -> MarkovDict
 addOneToKeyOfKey firstKey secondKey currentMarkov =
@@ -69,3 +82,7 @@ addOne maybe =
   case maybe of
     Just value -> Just <| value + 1
     Nothing -> Just 1
+
+{-
+  end helper functions
+-}
