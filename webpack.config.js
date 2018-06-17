@@ -67,7 +67,7 @@ if ( TARGET_ENV === 'development' ) {
       historyApiFallback: true,
       contentBase: './src',
       inline: true,
-      stats: { colors: true },
+      stats: 'none',
     },
 
     module: {
