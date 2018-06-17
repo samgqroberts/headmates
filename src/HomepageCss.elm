@@ -38,6 +38,7 @@ css =
             , padding (px 30)
             , displayFlex
             , flexDirection column
+            , justifyContent spaceBetween
             ]
         , class Headmate
             [ padding2 (Css.em 1) (px 24)
@@ -45,6 +46,7 @@ css =
             , border3 (px 1) solid greyscale3
             , whiteSpace preWrap
             , property "word-break" "break-all"
+            , Css.property "user-select" "none"
             ]
         , class HeadmateNext
             [ color blue1 ]

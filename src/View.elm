@@ -22,7 +22,7 @@ view model =
 viewHeadmate : String -> Models.Headmate -> Html Msg
 viewHeadmate userInput headmate =
   pre [ class [ Headmate ], onClick (Msgs.UpdateUserInput (userInput ++ predictionToString headmate.prediction))]
-    [ span [ class [ HeadmateUserCopy ] ] [ text userInput ]
+    [ span [ class [ HeadmateUserCopy ] ] [ text (if (String.isEmpty userInput) then " " else userInput) ]
     , span [ class [ HeadmateNext ] ] [ text (predictionToString headmate.prediction) ]
     ]
 
