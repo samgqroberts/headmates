@@ -6,16 +6,14 @@ import Models exposing (..)
 import Update exposing (update)
 import View exposing (view)
 import Subscriptions exposing (subscriptions)
-import Dict
 
 init : ( Model, Cmd Msg )
 init =
   (
     { userInput = ""
     , headmates =
-        [ { predictor = Markov { orderRange = (1, 5) }, prediction = NoPrediction }
-        , { predictor = Markov { orderRange = (1, 10) }, prediction = NoPrediction }
-        , { predictor = Markov { orderRange = (6, 10) }, prediction = NoPrediction }
+        [ { predictor = Markov { orderRange = (1, 10), tokenizationType = Character }, prediction = NoPrediction }
+        , { predictor = Markov { orderRange = (1, 10), tokenizationType = Word }, prediction = NoPrediction }
         ]
     }
   , Cmd.none

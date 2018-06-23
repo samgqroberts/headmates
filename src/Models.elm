@@ -1,5 +1,6 @@
 module Models exposing (..)
 
+import Array exposing (Array)
 import Dict exposing (Dict)
 
 -- overall state
@@ -14,11 +15,22 @@ type alias Headmate =
   , prediction : Prediction
   }
 
+-- how to define a "gram"?
+type TokenizationType
+  = Character
+  | Word
+
 -- what's needed to make a Markov based prediction
 type alias MarkovConfig =
   { orderRange : (Int, Int)
+  , tokenizationType : TokenizationType
   }
-type alias MarkovDict = Dict String (Dict String Int)
+-- what's needed to build a single Markov prediction dictionary
+type alias SingleMarkovConfig =
+  { order : Int
+  , tokenizationType : TokenizationType
+  }
+type alias MarkovDict = Dict (List String) (Dict (List String) Int)
 
 -- something capable of predicting the next phrase of text
 type Predictor

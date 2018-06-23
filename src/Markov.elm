@@ -1,35 +1,43 @@
 module Markov exposing (..)
 
 import List
-import Dict
+import Dict exposing (Dict)
 import Random exposing (Seed)
-import Array
+import Array exposing (Array)
 
-import Models exposing (MarkovDict, MarkovConfig, Prediction(..))
+import Models exposing (MarkovDict, MarkovConfig, SingleMarkovConfig, Prediction(..), TokenizationType(..))
 
 -- convert a source text input into a prediction for the following phrase
 -- do so for each order in the config's order range
 -- return the Prediction of the highest order that has a Prediction
+-- TODO test the prediction logic
 predict : Seed -> String -> MarkovConfig -> Prediction
 predict seed input config =
   List.range (Tuple.first config.orderRange) (Tuple.second config.orderRange)
     |> List.sortBy negate
+    |> List.map (\order -> { order = order, tokenizationType = config.tokenizationType })
     |> List.filterMap (inputIntoPrediction seed input)
     |> List.map Prediction
     |> List.foldr always NoPrediction
 
 -- convert a source text input into a prediction for the following phrase
 -- by building a MarkovDict
-inputIntoPrediction : Seed -> String -> Int -> Maybe String
-inputIntoPrediction seed input order =
-    order
-        |> buildMarkov input
-        |> predictSingle seed input order
+inputIntoPrediction : Seed -> String -> SingleMarkovConfig -> Maybe String
+inputIntoPrediction seed input config =
+  let
+    (tokens, markovDict) = buildMarkov input config
+  in
+    predictSingle seed tokens config markovDict
+      |> Maybe.map (
+        case config.tokenizationType of
+          Character -> String.concat
+          Word -> \list -> " " ++ (String.join " " list)
+      )
 
 -- use a MarkovDict to predict the next k-gram of given order
-predictSingle : Seed -> String -> Int -> MarkovDict -> Maybe String
-predictSingle seed input order markov =
-  case Dict.get (String.right order input) markov  of
+predictSingle : Seed -> Array String -> SingleMarkovConfig -> MarkovDict -> Maybe (List String)
+predictSingle seed tokens config markov =
+  case Dict.get (Array.toList <| Array.slice -config.order (Array.length tokens) tokens) markov of
     Nothing -> Nothing
     Just dict ->
       let
@@ -43,35 +51,49 @@ predictSingle seed input order markov =
         Array.fromList values
           |> Array.get randomIndex
 
--- produce a MarkovDict with k-gram statistics of given source text
+-- produce a tuple of (tokens, built markov dict with k-gram statistics of given source text)
 -- can use the produced dict to predict probabilities of proceeding k-grams
-buildMarkov : String -> Int -> MarkovDict
-buildMarkov sourceText order =
-  buildMarkovFn sourceText order Dict.empty
+buildMarkov : String -> SingleMarkovConfig -> (Array String, MarkovDict)
+buildMarkov sourceText config =
+  let
+    tokens = tokenize sourceText config.tokenizationType
+  in
+    (tokens, buildMarkovFn config.order tokens Dict.empty)
+
+tokenize : String -> TokenizationType ->  Array String
+tokenize sourceText tokenizationType =
+  case tokenizationType of
+    Character ->
+      String.toList sourceText
+        |> List.map String.fromChar
+        |> Array.fromList
+    Word ->
+      String.words sourceText
+        |> Array.fromList
 
 -- recursive function for building a MarkovDict
-buildMarkovFn : String -> Int -> MarkovDict -> MarkovDict
-buildMarkovFn sourceText order currentMarkov =
-  if (String.length sourceText) < order * 2 then
+buildMarkovFn : Int -> Array String -> MarkovDict -> MarkovDict
+buildMarkovFn order tokens currentMarkov =
+  if (Array.length tokens < order * 2) then
     currentMarkov
   else
-    let
-      kgram1 = String.slice 0 order sourceText
-      kgram2 = String.slice (order) (2 * order) sourceText
-      nextSourceText = String.dropLeft 1 sourceText
-      nextMarkov = addOneToKeyOfKey kgram1 kgram2 currentMarkov
-    in
-      buildMarkovFn nextSourceText order nextMarkov
+    buildMarkovFn
+      order
+      (Array.slice 1 (Array.length tokens) tokens)
+      (addOneToKeyOfKey
+        (Array.toList <| Array.slice 0 order tokens)
+        (Array.toList <| Array.slice (order) (order * 2) tokens)
+        currentMarkov)
 
 {-
   helper functions dealing with building / mutating a MarkovDict
 -}
 
-addOneToKeyOfKey : String -> String -> MarkovDict -> MarkovDict
+addOneToKeyOfKey : (List String) -> (List String) -> MarkovDict -> MarkovDict
 addOneToKeyOfKey firstKey secondKey currentMarkov =
   Dict.update firstKey (addOneToKey secondKey) currentMarkov
 
-addOneToKey : String -> Maybe (Dict.Dict String Int) -> Maybe (Dict.Dict String Int)
+addOneToKey : (List String) -> Maybe (Dict (List String) Int) -> Maybe (Dict (List String) Int)
 addOneToKey key maybeDict =
   case maybeDict of
     Just dict -> Just (Dict.update key addOne dict)
