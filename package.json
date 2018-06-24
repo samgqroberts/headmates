@@ -5,8 +5,11 @@
   "author": "samgqroberts <samgqroberts@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "elm-install": "elm-package install",
     "build": "webpack",
-    "start": "webpack-dev-server --port 3000"
+    "start": "webpack-dev-server --port 3000",
+    "test": "elm-test **/*Test.elm",
+    "start-test": "elm-test **/*Test.elm --watch"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",
@@ -16,6 +19,7 @@
     "elm": "^0.18.0",
     "elm-css-webpack-loader": "^3.1.0",
     "elm-hot-loader": "^0.5.4",
+    "elm-test": "^0.18.12",
     "elm-webpack-loader": "^4.2.0",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.10.1",
