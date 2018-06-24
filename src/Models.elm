@@ -1,6 +1,5 @@
 module Models exposing (..)
 
-import Array exposing (Array)
 import Dict exposing (Dict)
 
 -- overall state
