@@ -41,6 +41,17 @@ css =
             , justifyContent spaceBetween
             ]
         , class Headmate
+            [
+            ]
+        , class HeadmateText
+            [ padding2 (Css.em 1) (px 24)
+            , margin (px 0)
+            , border3 (px 1) solid greyscale3
+            , whiteSpace preWrap
+            , property "word-break" "break-all"
+            , Css.property "user-select" "none"
+            ]
+        , class HeadmateConfig
             [ padding2 (Css.em 1) (px 24)
             , margin (px 0)
             , border3 (px 1) solid greyscale3
