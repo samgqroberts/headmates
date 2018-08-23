@@ -1,6 +1,8 @@
 # Headmates
 The goal of this project is to provide for the user as she writes in a textbox multiple suggestions for the next words / phrases.
 
+Another goal is for me to learn about elm, markov chains, and later other methods of text prediction like neural nets.
+
 # Development
 
 ## Installation
@@ -11,7 +13,8 @@ Follow the instructions here: https://github.com/creationix/nvm
 You must use `npm` at a version of 5 or greater, for the `package-lock.json` to have effect
 
 ### Install `npm` dependencies
-`npm install`
+`npm install`  
+You may also need to specifically say `npm install elm` in order for specific elm binaries, like elm-package, to be installed into node_modules
 
 ### Install Elm dependencies
 `npm run elm-install`
