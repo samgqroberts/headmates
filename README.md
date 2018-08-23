@@ -1,5 +1,5 @@
 # Headmates
-The goal of this project is to provide for the user as she writes in a textbox multiple suggestions for the next words / phrases.
+The goal of this project is to provide for the user as they write in a textbox multiple suggestions for the next words / phrases.
 
 Another goal is for me to learn about elm, markov chains, and later other methods of text prediction like neural nets.
 
