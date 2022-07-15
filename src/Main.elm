@@ -1,31 +1,40 @@
 module Main exposing (..)
 
-import Html exposing (program)
-import Msgs exposing (Msg)
+import Browser exposing (Document, document)
 import Models exposing (..)
+import Msgs exposing (Msg)
+import Subscriptions exposing (subscriptions)
+import Tuple exposing (first)
 import Update exposing (update)
 import View exposing (view)
-import Subscriptions exposing (subscriptions)
 
-init : ( Model, Cmd Msg )
-init =
-  (
-    { userInput = ""
-    , headmates =
-        [ { predictor = Markov { orderRange = (1, 10), tokenizationType = Character }, prediction = NoPrediction }
-        , { predictor = Markov { orderRange = (1, 10), tokenizationType = Word }, prediction = NoPrediction }
-        ]
-    }
-  , Cmd.none
-  )
+
+init : flags -> ( Model, Cmd Msg )
+init flags =
+    ( { userInput = ""
+      , headmates =
+            [ { predictor = Markov { orderRange = ( 1, 10 ), tokenizationType = Character }, prediction = NoPrediction }
+            , { predictor = Markov { orderRange = ( 1, 10 ), tokenizationType = Word }, prediction = NoPrediction }
+            ]
+      }
+    , Cmd.none
+    )
+
+
+doc : Model -> Document Msg
+doc model =
+    Document "Headmates" [ view model ]
+
+
 
 -- Main
 
-main : Program Never Model Msg
+
+main : Program () Model Msg
 main =
-  program
-    { init = init
-    , view = view
-    , update = update
-    , subscriptions = subscriptions
-    }
+    document
+        { init = init
+        , view = doc
+        , update = update
+        , subscriptions = subscriptions
+        }

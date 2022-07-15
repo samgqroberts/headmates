@@ -1,5 +1,6 @@
 module Msgs exposing (..)
 
+
 type Msg
-  = UpdateUserInput String
-  | UpdatePredictions Int
+    = UpdateUserInput String
+    | UpdatePredictions Int
